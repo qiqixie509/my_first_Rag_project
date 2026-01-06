@@ -35,6 +35,7 @@ COPY --from=base /app /app
 
 # Add virtual environment to PATH
 ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app/src"
 
 # Run the application
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"] 

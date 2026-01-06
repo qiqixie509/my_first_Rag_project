@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Literal
+from pydantic import Field, validator
 
 PROJECT_DIR = Path(__file__).parent
 ENV_FILE_PATH = PROJECT_DIR / ".env"
@@ -57,8 +59,6 @@ class RedisSetting(BaseConfigSettings):
     socket_connect_timeout: int = 30
     ttl_hours: int = 6 # Cache TTL in hours
     
-    
-
 
 class Settings(BaseConfigSettings):
     app_version: str = "0.0.1"
@@ -82,7 +82,7 @@ class Settings(BaseConfigSettings):
     @validator("postgres_database_url") 
     @classmethod
     def validate_database_url(cls, v:str)-> str:
-        if not (v.startwith("postgresql://") or v.startswith("postgresql+psycopg2://")):
+        if not (v.startswith("postgresql://") or v.startswith("postgresql+psycopg2://")):
             raise ValueError("Database URL must start with 'postgresql://' or 'postgresql+psycopg2://'")
         return v    
     

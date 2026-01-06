@@ -2,9 +2,10 @@ import logging
 import os
 from fastapi import FastAPI
 import uvicorn
-from db.interfaces.postgresql import PostgreSQLDatabase
-from db.interfaces import make_database
+from db.factory import make_database
 from contextlib import asynccontextmanager
+from config import get_settings
+from routers import ping
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

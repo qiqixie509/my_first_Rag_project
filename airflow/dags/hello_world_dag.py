@@ -15,6 +15,7 @@ def check_services():
         print(f"API Health: {response.status_code}")
         conn = psycopg2.connect(
             host="postgres",
+            port="5432",
             database="rag_db",
             user="rag_user",
             password="rag_password"

@@ -2,12 +2,12 @@ from schemas.api.health import ServiceStatus
 from fastapi import APIRouter
 from sqlalchemy import text
 from schemas.api.health import HealthResponse
-from dependencies import DatabaseDep, SettingsDep, OpeOpensearchDepn
+from dependencies import DatabaseDep, SettingsDep
 
 router = APIRouter()
 
 @router.get("/health", response_model=HealthResponse, tags=["Health"])
-async def health_check(settings: SettingsDep, database: DatabaseDep, opensearch_client: OpensearchDep):
+async def health_check(settings: SettingsDep, database: DatabaseDep):
     services = {}
     overall_status = "ok"
     
@@ -32,7 +32,12 @@ async def health_check(settings: SettingsDep, database: DatabaseDep, opensearch_
             return ServiceStatus(status="healthy", message="Database connection successful") 
         
 
-    def _check_opensearch():
-        if not opensearch_client.health_check():
-            return ServiceStatus(status="unhealthy", message="Not responding")
-        status = opensearch_client.get_index_status()
+
+    _check_service("database", _check_database)
+    return HealthResponse(
+        status=overall_status, 
+        version=settings.app_version,
+        environment=settings.enviornment,
+        service_name=settings.service_name,
+        services=services
+    )

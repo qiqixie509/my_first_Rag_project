@@ -1,7 +1,6 @@
-from botocore.session import get_session
 from db.interfaces.base import BaseDatabase
 from config import get_settings
-from db.postgresql import PostgreSQLDatabase
+from db.interfaces.postgresql import PostgreSQLDatabase
 from schemas.config import PostgreSQLSettings
 
 
