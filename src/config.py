@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
-from pydantic import Field, validator
+from pydantic import Field, validator, field_validator
 
 PROJECT_DIR = Path(__file__).parent
 ENV_FILE_PATH = PROJECT_DIR / ".env"
@@ -16,6 +16,39 @@ class BaseConfigSettings(BaseSettings):
         env_nested_delimiter="__",
         case_sensitive=False,
     )
+
+class ArxivSettings(BaseConfigSettings):
+    model_config = SettingsConfigDict(
+        env_file=[".env", str(ENV_FILE_PATH)],
+        env_prefix="ARXIV__",
+        extra="ignore",
+        frozen=True,
+        case_sensitive=False,
+    )
+
+    base_url: str = "https://export.arxiv.org/api/query"
+    pdf_cache_dir: str = "./data/pdf_cache"
+    rate_limit_delay: float = 3.0
+    timeout_seconds: int = 30
+    max_results: int = 15
+    search_category: str = "cs.AI"
+    download_max_retries: int = 3
+    download_retry_delay_base: float = 5.0
+    max_concurrent_downloads: int = 5
+    max_concurrent_parsing: int = 1
+
+    namespaces: dict = {
+        "atom": "http://www.w3.org/2005/Atom",
+        "opensearch": "http://a9.com/-/spec/opensearch/1.1/",
+        "arxiv": "http://arxiv.org/schemas/atom"
+    }
+
+    @field_validator("pdf_cache_dir")
+    @classmethod
+    def validate_cache_dir(cls, v: str) -> str:
+        os.makedirs(v, exist_ok=True)    
+        return v
+    
 
 
 class OpenSearchSettings(BaseConfigSettings):
@@ -75,6 +108,7 @@ class Settings(BaseConfigSettings):
     ollama_model: str = "llama3.2:1b"
     ollama_timeout: int = 300
 
+    arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)
     redis: RedisSetting = Field(default_factory=RedisSetting)
 

@@ -6,6 +6,9 @@ from db.factory import make_database
 from contextlib import asynccontextmanager
 from config import get_settings
 from routers import ping
+from services.opensearch.factory import make_opensearch_client
+from services.arxiv.factory import make_arxiv_client
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,6 +20,21 @@ async def lifespan(app: FastAPI):
     app.state.database = database
     logging.info("Database connected")
 
+    # Initialize search service
+    opensearch_client = make_opensearch_client()
+    app.state.opensearch_client = opensearch_client
+    logging.info("Search service initialized")
+
+    if opensearch_client.health_check():
+        logging.info("Search service is healthy")
+    else:
+        logging.error("Search service is not healthy")
+
+    app.state.arxiv_client = make_arxiv_client()
+    app.state.opensearch_client = make_opensearch_client()
+    logging.info("Services initialized: arXiv API client and OpenSearch client")
+
+    logging.info("API startup complete")
     yield
     database.teardown()
     logging.info("API shutdown complete")
