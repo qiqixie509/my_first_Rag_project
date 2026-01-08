@@ -9,8 +9,8 @@ if current_dir.name == "test":
     print(f"Added {project_root} to path")
 
 try:
-    from src.services.arxiv.factory import make_arxiv_client
-    print("✓ Successfully imported src.services.arxiv.factory")
+    from services.arxiv.factory import make_arxiv_client
+    print("✓ Successfully imported services.arxiv.factory")
     
     client = make_arxiv_client()
     print(f"✓ Client created: {client.base_url}")

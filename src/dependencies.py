@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from functools import lru_cache
 from fastapi import Request
 from typing import Generator
-from src.config import Settings
+from config import Settings
 
 
 @lru_cache
