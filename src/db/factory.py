@@ -1,7 +1,7 @@
 from db.interfaces.base import BaseDatabase
 from config import get_settings
 from db.interfaces.postgresql import PostgreSQLDatabase
-from schemas.config import PostgreSQLSettings
+from schemas.database.config import PostgreSQLSettings
 
 
 def make_database()->BaseDatabase:

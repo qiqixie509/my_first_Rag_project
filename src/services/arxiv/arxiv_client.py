@@ -1,3 +1,4 @@
+from exceptions import PDFDownloadException
 import sys
 from config import ArxivSettings
 from typing import Optional
@@ -8,8 +9,9 @@ import logging
 import time
 import asyncio
 import xml.etree.ElementTree as ET
-from exceptions import ArxivParseError
+from exceptions import ArxivParseError, ArxivAPIException, PDFDownloadException, PDFDownloadTimeoutError
 from schemas.arxiv.paper import ArxivPaper
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -78,13 +80,9 @@ class ArxivClient:
         return authors
 
 
-    def _get_categories(self, entry: ET.Element)->list[str]:
-        categories = []
-        for category in entry.findall("atom:category", self.namespaces):
-            term = category.get("term")
-            if term:
-                categories.append(category)
-        return categories
+    def _get_categories(self, entry: ET.Element) -> list[str]:
+        category_elements = entry.findall("atom:category", self.namespaces)
+        return [cat.get("term") for cat in category_elements if cat.get("term")]
 
 
     def _get_pdf_url(self, entry: ET.Element)->str:
@@ -169,7 +167,6 @@ class ArxivClient:
 
         safe = ":+[]"
         url = f"{self.base_url}?{urlencode(params, quote_via=quote, safe=safe)}"
-
         try:
             logger.info(f"Fetching {max_results} {self.search_category} papers from arXiv")
 
@@ -187,7 +184,82 @@ class ArxivClient:
                 xml_data = response.text
 
             papers = self._parse_response(xml_data)
+            logger.info(f"Fetched {len(papers)} papers from arXiv")
             return papers
+        except httpx.TimeoutException as e:
+            logger.error(f"Request to arXiv timed out: {e}")
+            raise ArxivAPIException(f"Request to arXiv timed out: {e}")
+        except httpx.HTTPStatusError as e:
+            logger.error(f"arXiv API HTTP error: {e}")
+            raise ArxivAPIException(f"Request to arXiv failed with status code {e.response.status_code}: {e.response.text}")
         except Exception as e:
-            logger.error(f"Failed to fetch arXiv papers: {e}")
-            raise ArxivError(f"Failed to fetch arXiv papers: {e}")
+            logger.error(f"Failed to fetch papers from arXiv: {e}")
+            raise ArxivAPIException(f"Unexpected error fetching papers from arXiv: {e}")
+
+
+def _get_pdf_path(self, arxiv_id: str, force_download: bool = False) -> Path:
+    safe_filename = arxiv_id.replace("/", "_") + ".pdf"
+    return self.pdf_dir / safe_filename
+
+
+def _download_with_retry(self, url: str, pdf_path: Path, max_retries: Optional[int] = None) -> bool:
+    if max_retries is None:
+        max_retries = self._settings.download_max_retries
+    
+    logger.info(f"Downloading PDF from {url} to {pdf_path.name}")
+
+    await asyncio.sleep(self.rate_limit_delay)
+    
+    for attempt in range(max_retries):
+        try:
+            async with httpx.AsyncClient(timeout=float(self.timeout_seconds)) as client:
+                async with client.stream("GET", url) as response:
+                    response.raise_for_status()
+                    with open(pdf_path, "wb") as f:
+                        async for chunk in response.aiter_bytes():
+                            f.write(chunk)
+            logger.info(f"Successfully downloaded PDF to {pdf_path.name}")
+            return True
+        except httpx.TimeoutException as e:
+            if attempt < max_retries - 1:
+                wait_time = self.download_retry_delay_base * (attempt + 1)
+                logger.warning(f"PDF download timeout (attempt {attempt + 1}/{max_retries}): {e}")
+                logger.info(f"Retrying in {wait_time} seconds...")
+                await asyncio.sleep(wait_time)
+            else:
+                logger.error(f"PDF download failed after {max_retries} attempts due to timeout: {e}")
+                raise PDFDownloadTimeoutError(f"PDF download failed after {max_retries} attempts due to timeout: {e}")
+        except httpx.HTTPError as e:
+            if attempt < max_retries - 1:
+                wait_time = self.download_retry_delay_base * (attempt + 1)
+                logger.warning(f"PDF download HTTP error (attempt {attempt + 1}/{max_retries}): {e}")
+                logger.info(f"Retrying in {wait_time} seconds...")
+                await asyncio.sleep(wait_time)
+            else:
+                logger.error(f"PDF download failed after {max_retries} attempts due to HTTP error: {e}")
+                raise PDFDownloadException(f"PDF download failed after {max_retries} attempts due to HTTP error: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected download error: {e}")
+            raise PDFDownloadException(f"Unexpected download error: {e}")
+
+    if pdf_path.exists():
+        pdf_path.unlink()
+
+    return False
+
+
+async def download_pdf(self, paper: ArxivPaper) -> Optional[Path]:
+    if not paper.pdf_url:
+        logger.error(f"No PDF URL for paper {paper.arxiv_id}")
+        return None
+
+    pdf_path = self._get_pdf_path(paper.arxiv_id)
+    if pdf_path.exists() and not force_download:
+        logger.info(f"Using cached PDF at {pdf_path.name}")
+        return pdf_path
+
+    if await self._download_with_retry(paper.pdf_url, pdf_path):
+        return pdf_path
+    
+    return None
+    

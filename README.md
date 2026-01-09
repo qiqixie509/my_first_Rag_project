@@ -19,4 +19,6 @@
 - .env: environment variables
 - Dockerfile: dockerfile
 
+## Data Ingestion
+Data source: arxiv
 

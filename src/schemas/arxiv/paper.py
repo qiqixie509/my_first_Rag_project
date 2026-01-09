@@ -9,5 +9,3 @@ class ArxivPaper(BaseModel):
     published: str = Field(..., description="arxiv paper published date")
     categories: list[str] = Field(..., description="arxiv paper categories")
     pdf_url: str = Field(..., description="arxiv paper pdf url")
-
-    

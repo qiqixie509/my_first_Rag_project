@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text, inspect
 from typing import Optional, Generator
 import logging
 from db.interfaces.base import BaseDatabase
-from schemas.config import PostgreSQLSettings
+from schemas.database.config import PostgreSQLSettings
 
 logger = logging.getLogger(__name__)
 
