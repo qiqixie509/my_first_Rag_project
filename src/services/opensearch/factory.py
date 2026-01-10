@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Optional
-from config import Settings, get_settings
-from services.opensearch.client import OpensearchClient
+from src.config import Settings, get_settings
+from src.services.opensearch.client import OpensearchClient
 
 @lru_cache(maxsize=1)
 def make_opensearch_client(settings: Optional[Settings] = None) -> OpensearchClient:

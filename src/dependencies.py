@@ -1,11 +1,11 @@
 from fastapi import Depends
 from typing import Annotated
-from db.interfaces.base import BaseDatabase
+from src.db.interfaces.base import BaseDatabase
 from sqlalchemy.orm import Session
 from functools import lru_cache
 from fastapi import Request
 from typing import Generator
-from config import Settings
+from src.config import Settings
 
 
 @lru_cache

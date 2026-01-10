@@ -1,5 +1,5 @@
-from services.arxiv.arxiv_client import ArxivClient
-from config import get_settings
+from src.services.arxiv.arxiv_client import ArxivClient
+from src.config import get_settings
 
 def make_arxiv_client() -> ArxivClient:
     settings = get_settings()

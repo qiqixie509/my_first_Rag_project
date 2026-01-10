@@ -1,6 +1,6 @@
-from exceptions import PDFDownloadException
+from src.exceptions import PDFDownloadException
 import sys
-from config import ArxivSettings
+from src.config import ArxivSettings
 from typing import Optional
 from pathlib import Path
 from functools import cached_property
@@ -9,8 +9,8 @@ import logging
 import time
 import asyncio
 import xml.etree.ElementTree as ET
-from exceptions import ArxivParseError, ArxivAPIException, PDFDownloadException, PDFDownloadTimeoutError
-from schemas.arxiv.paper import ArxivPaper
+from src.exceptions import ArxivParseError, ArxivAPIException, PDFDownloadException, PDFDownloadTimeoutError
+from src.schemas.arxiv.paper import ArxivPaper
 import httpx
 
 logger = logging.getLogger(__name__)

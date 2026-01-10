@@ -7,9 +7,15 @@ class ArxivParseError(ArxivAPIException):
 class ArxivError(ArxivAPIException):
     """Exception raised when arXiv API request fails"""
 
-class PDFDownloadException(Exception):
-    """Base exception for PDF download errors"""
+class PDFParsingException(Exception):
+    """Base exception for PDF parsing errors"""
+
+class PDFDownloadException(PDFParsingException):
+    """Exception raised when PDF download fails"""
 
 class PDFDownloadTimeoutError(PDFDownloadException):
     """Exception raised when PDF download times out"""
+
+class PDFValidationError(PDFParsingException):
+    """Exception raised when PDF is invalid"""
     

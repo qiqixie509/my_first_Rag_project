@@ -2,12 +2,12 @@ import logging
 import os
 from fastapi import FastAPI
 import uvicorn
-from db.factory import make_database
+from src.db.factory import make_database
 from contextlib import asynccontextmanager
-from config import get_settings
-from routers import ping
-from services.opensearch.factory import make_opensearch_client
-from services.arxiv.factory import make_arxiv_client
+from src.config import get_settings
+from src.routers import ping
+from src.services.opensearch.factory import make_opensearch_client
+from src.services.arxiv.factory import make_arxiv_client
 
 
 @asynccontextmanager

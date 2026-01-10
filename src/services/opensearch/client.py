@@ -1,5 +1,5 @@
 from typing import Optional
-from config import Settings
+from src.config import Settings
 from opensearchpy import OpenSearch
 import logging
 
