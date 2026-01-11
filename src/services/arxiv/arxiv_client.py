@@ -117,7 +117,7 @@ class ArxivClient:
                 title=title,
                 authors=authors,
                 abstract=abstract,
-                published=published,
+                published_date=published,
                 categories=categories,
                 pdf_url=pdf_url
             )

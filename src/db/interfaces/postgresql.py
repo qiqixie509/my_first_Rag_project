@@ -3,8 +3,9 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from sqlalchemy import create_engine, text, inspect
 from typing import Optional, Generator
 import logging
-from db.interfaces.base import BaseDatabase
-from schemas.database.config import PostgreSQLSettings
+from src.db.interfaces.base import BaseDatabase
+from src.schemas.database.config import PostgreSQLSettings
+from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +71,7 @@ class PostgreSQLDatabase(BaseDatabase):
             self.engine.dispose()
             logger.info("PostgreSQL database connection closed")
 
+    @contextmanager
     def get_session(self) -> Generator[Session, None, None]:
         if not self.session_factory:
             raise Exception("Session factory not initialized")

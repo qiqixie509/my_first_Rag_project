@@ -8,6 +8,7 @@ from src.config import get_settings
 from src.routers import ping
 from src.services.opensearch.factory import make_opensearch_client
 from src.services.arxiv.factory import make_arxiv_client
+from src.services.pdf_parser.factory import make_pdf_parser_service
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ async def lifespan(app: FastAPI):
 
     app.state.arxiv_client = make_arxiv_client()
     app.state.opensearch_client = make_opensearch_client()
+    app.state.pdf_parser = make_pdf_parser_service()
     logging.info("Services initialized: arXiv API client and OpenSearch client")
 
     logging.info("API startup complete")

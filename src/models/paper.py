@@ -1,12 +1,15 @@
-from db.base import Base
-from sqlalchemy import Column, Integer, String, DateTime, Text
+import uuid
+from src.db.interfaces.postgresql import Base
+from sqlalchemy import Column, String, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import JSON, Boolean
+from datetime import datetime, timezone
 
 class Paper(Base):
     __tablename__ = "papers"
 
     # Core arXiv metadata
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     arxiv_id = Column(String, unique=True, nullable=False, index=True)
     title = Column(Text, nullable=False)
     abstract = Column(Text, nullable=False)
