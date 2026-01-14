@@ -18,4 +18,10 @@ class PDFDownloadTimeoutError(PDFDownloadException):
 
 class PDFValidationError(PDFParsingException):
     """Exception raised when PDF is invalid"""
+
+class MetadataFetchingException(Exception):
+    """Exception raised when metadata fetching fails"""
+
+class PipelineException(MetadataFetchingException):
+    """Exception raised when pipeline fails"""
     

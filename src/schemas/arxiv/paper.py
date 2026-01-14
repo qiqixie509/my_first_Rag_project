@@ -65,8 +65,3 @@ class PaperResponse(PaperBase):
 
     class Config:
         from_attributes = True
-
-
-class PaperSearchResponse(BaseModel):
-    papers: List[PaperResponse]
-    total: int

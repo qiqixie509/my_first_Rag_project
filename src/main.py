@@ -9,7 +9,8 @@ from src.routers import ping
 from src.services.opensearch.factory import make_opensearch_client
 from src.services.arxiv.factory import make_arxiv_client
 from src.services.pdf_parser.factory import make_pdf_parser_service
-
+from src.services.embedding.factory import make_embeddings_client
+from src.routers import hybrid_search
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,7 +35,8 @@ async def lifespan(app: FastAPI):
     app.state.arxiv_client = make_arxiv_client()
     app.state.opensearch_client = make_opensearch_client()
     app.state.pdf_parser = make_pdf_parser_service()
-    logging.info("Services initialized: arXiv API client and OpenSearch client")
+    app.state.embeddings_service = make_embeddings_client()
+    logging.info("Services initialized: arXiv API client, OpenSearch client, PDF parser, and embeddings service")
 
     logging.info("API startup complete")
     yield
@@ -49,6 +51,7 @@ app = FastAPI(
 )
 
 app.include_router(ping.router, prefix="/api/v1") # Health check endpoint
+app.include_router(hybrid_search.router, prefix="/api/v1")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

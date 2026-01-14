@@ -1,4 +1,15 @@
 # my_first_Rag_project
+This Rag system is a complete research assistant that automatically solves research discovery problem. In the project, the modules are included:
+- Arxiv: It is responsible for fetching the latest research papers automatically daily.
+- PDF Parsing: It is responsible for parsing the PDFs of the research papers using docling.
+- Metadata Storage: Store authors, titles, abstracts, and categories of the research papers. The metadata is stored in PostgreSQL.
+- Search Engine: Use OpenSearch to index the parsed data, and apply hybrid search (BM25 + semantic vectors) to retrieve the relevant papers.
+- Chunking Engine: 
+- Rag pipeline: Query expansion + retriveval + prompt templating
+- Local LLM: Answer questions using Ollama or API
+- Observability: 
+- FastAPI backend: 
+ 
 
 ## Environment
 - Python 3.12
@@ -12,13 +23,18 @@
 - Ollama
 - Airflow   
 
-## Structure
-- src: source code
-- schemas: data models
-- tests: tests
-- .env: environment variables
-- Dockerfile: dockerfile
+## Arxiv Ingestion
+
 
 ## Data Ingestion
 Data source: arxiv
+Docling PDF processing
+Data storage: PostgreSQL
+Opensearch indexing
+Embedding using Jani
+
+
+## Data Ingestion Pipeline
+Fetch PDFs using Arxiv API -> Parse PDFs using Docling -> Store the parsed data in PostgreSQL -> Index the parsed data in OpenSearch -> Embedding the parsed data using Jani -> Daily report including the data from PostgreSQL and OpenSearch
+
 

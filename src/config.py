@@ -50,6 +50,20 @@ class ArxivSettings(BaseConfigSettings):
         return v
     
 
+class ChunkingSettings(BaseConfigSettings):
+    model_config = SettingsConfigDict(
+        env_file = [".env", str(ENV_FILE_PATH)],
+        env_prefix="CHUNKING__",
+        extra="ignore",
+        frozen=True,
+        case_sensitive=False
+    )
+    chunk_size: int = 600 # Target words per chunk
+    overlap_size: int = 100 # Words to overlap between chunks
+    min_chunk_size: int=100 # Minimum words for a valid chunk
+    section_based: bool = True # Chunk by section
+    
+
 
 class OpenSearchSettings(BaseConfigSettings):
     model_config = SettingsConfigDict(
@@ -123,8 +137,12 @@ class Settings(BaseConfigSettings):
     ollama_model: str = "llama3.2:1b"
     ollama_timeout: int = 300
 
+    # Jina AI embeddings configuration
+    jina_api_key: str = "jina_e33c88c5d58848119d084207ac16572f1O-axjl_SRPKuBVt1UrCfW9ecynx"
+
     arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)
+    chunking: ChunkingSettings = Field(default_factory=ChunkingSettings)
     redis: RedisSetting = Field(default_factory=RedisSetting)
     pdf_parser: PDFParserSettings = Field(default_factory=PDFParserSettings)
 
