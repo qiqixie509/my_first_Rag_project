@@ -23,6 +23,7 @@ class DoclingParser:
         self._max_pages = max_pages
         self._max_file_size_bytes = max_file_size_mb * 1024 * 1024
 
+
     def _validate_pdf(self, pdf_path: Path):
         try:
             # Check file exists and not empty
@@ -65,6 +66,7 @@ class DoclingParser:
     def _warm_up_models(self):
        if not self._warmed_up:
            self._warmed_up = True
+
 
     async def parse_pdf(self, pdf_path: Path) -> Optional[PdfContent]:
         try:

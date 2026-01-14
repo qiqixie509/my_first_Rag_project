@@ -23,6 +23,12 @@ FROM python:3.12.8-slim AS final
 
 EXPOSE 8000
 
+# Install system dependencies for Docling (libGL.so.1, etc.)
+RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
 # PYTHONUNBUFFERED=1 to disable output buffering
 ENV PYTHONUNBUFFERED=1
 ARG VERSION=0.1.0

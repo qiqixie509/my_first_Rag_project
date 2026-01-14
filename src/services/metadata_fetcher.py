@@ -65,6 +65,7 @@ class MetadataFetcher:
             async with download_semaphore:
                 logger.debug(f"Starting download: {paper.arxiv_id}")
                 pdf_path = await self.arxiv_client.download_pdf(paper, False)
+                print(f"pdf_path: {pdf_path}")
                 if pdf_path:
                     download_success = True
                     logger.debug(f"Download complete: {paper.arxiv_id}")
@@ -267,6 +268,7 @@ class MetadataFetcher:
                 logger.info("Storing papers to database")
                 stored_count = self._store_papers_to_db(papers, parsed_papers, db_session)
                 results['papers_stored'] = stored_count
+                logger.info(f"Stored {stored_count} papers to database")
             elif store_to_db:
                 logger.warning("No database session provided for storing papers")
                 results['errors'].append("No database session provided for storing papers")
