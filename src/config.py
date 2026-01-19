@@ -159,7 +159,7 @@ class Settings(BaseConfigSettings):
     ollama_timeout: int = 300
 
     # Jina AI embeddings configuration
-    jina_api_key: str = "jina_e33c88c5d58848119d084207ac16572f1O-axjl_SRPKuBVt1UrCfW9ecynx"
+    jina_api_key: str = ""
 
     arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)
