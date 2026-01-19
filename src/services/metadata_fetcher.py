@@ -101,7 +101,7 @@ class MetadataFetcher:
         self, 
         papers: List[ArxivPaper]
     ) -> Dict[str, Any]:
-        results = {
+        results: Dict[str, Any] = {
             "downloaded": 0,
             "parsed": 0,
             "parsed_papers": {},
@@ -233,7 +233,7 @@ class MetadataFetcher:
         db_session: Optional[Session] = None,
     ) -> Dict[str, Any]:
         """Main entry point for fetching papers and processing them."""
-        results = {
+        results: Dict[str, Any] = {
             "papers_fetched": 0,
             "pdfs_downloaded": 0,
             "pdfs_parsed": 0,

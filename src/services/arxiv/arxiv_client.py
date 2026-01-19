@@ -87,7 +87,12 @@ class ArxivClient:
 
     def _get_categories(self, entry: ET.Element) -> list[str]:
         category_elements = entry.findall("atom:category", self.namespaces)
-        return [cat.get("term") for cat in category_elements if cat.get("term")]
+        categories = []
+        for cat in category_elements:
+            term = cat.get("term")
+            if term:
+                categories.append(term)
+        return categories
 
 
     def _get_pdf_url(self, entry: ET.Element)->str:
@@ -131,10 +136,11 @@ class ArxivClient:
             root = ET.fromstring(xml_data)
             entries = root.findall("atom:entry", self.namespaces)
             
-            papers = []
+            papers: list[ArxivPaper] = []
             for entry in entries:
                 paper = self._parse_single_entry(entry)
-                papers.append(paper)
+                if paper:
+                    papers.append(paper)
             
             return papers
         except ET.ParseError as e:

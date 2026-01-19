@@ -9,6 +9,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
+    libcurl4-openssl-dev \
+    libssl-dev \
     git \
     libpq-dev \
     poppler-utils \

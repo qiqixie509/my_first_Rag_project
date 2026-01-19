@@ -4,7 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
 from pydantic import Field, validator, field_validator
 
-PROJECT_DIR = Path(__file__).parent
+
+PROJECT_DIR = Path(__file__).parent.parent
 ENV_FILE_PATH = PROJECT_DIR / ".env"
 
 
@@ -88,7 +89,7 @@ class OpenSearchSettings(BaseConfigSettings):
     hybrid_search_size_multiplier: int = 2  # Get k*multiplier for better recall
 
 
-class RedisSetting(BaseConfigSettings):
+class RedisSettings(BaseConfigSettings):
     model_config = SettingsConfigDict(
         env_file=[".env", str(ENV_FILE_PATH)],
         env_prefix="REDIS__",
@@ -120,6 +121,26 @@ class PDFParserSettings(BaseConfigSettings):
     max_file_size_mb: int = 15
     do_ocr: bool = False
     do_table_structure: bool = True
+
+
+class LangfuseSettings(BaseConfigSettings):
+    model_config = SettingsConfigDict(
+        env_file=[ ".env", str(ENV_FILE_PATH)],
+        env_prefix="LANGFUSE__",
+        extra="ignore",
+        frozen=True,
+        case_sensitive=False,
+    )
+
+    enabled: bool = False
+    public_key: str = ""
+    secret_key: str = ""
+    host: str = "https://localhost:3000"
+    flush_at: int = 15
+    flush_interval: float = 1.0
+    max_retries: int = 3
+    timeout: int = 30
+    debug: bool = False
     
 
 class Settings(BaseConfigSettings):
@@ -138,13 +159,14 @@ class Settings(BaseConfigSettings):
     ollama_timeout: int = 300
 
     # Jina AI embeddings configuration
-    jina_api_key: str = ""
+    jina_api_key: str = "jina_e33c88c5d58848119d084207ac16572f1O-axjl_SRPKuBVt1UrCfW9ecynx"
 
     arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)
     chunking: ChunkingSettings = Field(default_factory=ChunkingSettings)
-    redis: RedisSetting = Field(default_factory=RedisSetting)
+    redis: RedisSettings = Field(default_factory=RedisSettings)
     pdf_parser: PDFParserSettings = Field(default_factory=PDFParserSettings)
+    langfuse: LangfuseSettings = Field(default_factory=LangfuseSettings)
 
 
     @validator("postgres_database_url") 

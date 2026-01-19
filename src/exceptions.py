@@ -24,4 +24,18 @@ class MetadataFetchingException(Exception):
 
 class PipelineException(MetadataFetchingException):
     """Exception raised when pipeline fails"""
-    
+
+class LLMException(Exception):
+    """Exception raised when LLM fails"""
+
+class OllamaException(LLMException):
+    """Exception raised when Ollama fails"""
+
+class OllamaConnectionException(OllamaException):
+    """Exception raised when Ollama connection fails"""
+
+class OllamaTimeoutError(OllamaException):
+    """Exception raised when Ollama times out"""
+
+class ConfigurationError(Exception):
+    """Exception raised when configuration is invalid"""

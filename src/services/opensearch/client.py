@@ -124,7 +124,45 @@ class OpenSearchClient:
             logger.error(f"Error creating RRF pipeline: {e}")
             raise
 
-           
+
+    def search_chunks_vector(
+        self, query_embedding: List[float], size: int=10, categories: Optional[List[str]] = None
+    )-> Dict[str, Any]:
+        try:
+            filter_clause = []
+            if categories:
+                filter_clause.append({"terms": {"category": categories}})
+            search_body = {
+                "size": size,
+                "query": {
+                    "knn": {
+                        "embedding": {
+                            "vector": query_embedding,
+                            "k": size
+                        }
+                    }
+                }
+            }    
+            if filter_clause:
+                search_body["query"] = {
+                    "bool": {
+                        "must": [search_body["query"]],
+                        "filter": filter_clause
+                    }
+                }
+            response = self.client.search(index=self.index_name, body=search_body)
+            results = {"total": response["hits"]["total"]["value"], "hits": []}
+
+            for hit in response["hits"]["hits"]:
+                chunk = hit["_source"]
+                chunk["score"] = hit["_score"]
+                chunk["chunk_id"] = hit["_id"]
+                results["hits"].append(chunk)
+
+            return results
+        except Exception as e:
+            logger.error(f"Error searching chunks: {e}")
+            raise
 
 
     def setup_indices(self, force: bool = False)->Dict[str, bool]:
@@ -167,75 +205,6 @@ class OpenSearchClient:
         logger.info(f"BM25 search for '{query[:50]}...' returned {results['total']} results")
 
         return results
-
-
-    def _search_hybrid_native(
-        self,
-        query: str,
-        query_embedding: List[float],
-        size: int = 10,
-        from_: int = 0,
-        categories: Optional[List[str]] = None,
-        min_score: float = 0.0
-    )-> Dict[str, Any]:
-        builder = QueryBuilder(
-            query=query,
-            size=size * 2,
-            from_=0,
-            categories=categories,
-            latest_papers=False,
-            search_chunks=True,
-        )
-        bm25_search_body=builder.build()
-        bm25_query = bm25_search_body["query"]
-        hybrid_query = {
-            "hybrid":{
-                "queries": [
-                    bm25_query, {
-                        "knn": {
-                            "embedding": {
-                                "vector": query_embedding,
-                                "k": size * 2
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-        search_body = {
-            "size": size,
-            "query": hybrid_query,
-            "_source": bm25_search_body["_source"],
-            "highlight": bm25_search_body["highlight"]
-        }
-
-        # Execute search with RRF pipeline
-        response = self.client.search(
-            index=self.index_name,
-            body=search_body,
-            params={
-                "search_pipeline": HYBRID_RRF_PIPELINE["id"]
-            }
-        )
-
-        results = {"total": response["hits"]["total"]["value"], "hits": []}
-
-        for hit in response["hits"]["hits"]:
-            if hit["_score"] < min_score:
-                continue
-
-            chunk = hit["_source"]
-            chunk["score"] = hit["_score"]
-            chunk["chunk_id"] = hit["_id"]
-
-            if "highlight" in hit:
-                chunk["highlights"] = hit["highlight"]
-
-            results["hits"].append(chunk)
-
-        results["total"] = len(results["hits"])
-        logger.info(f"Native hybrid search for '{query[:50]}...' returned {results['total']} results")
-        return results
         
 
     def search_unified(
@@ -255,7 +224,7 @@ class OpenSearchClient:
                 return self._search_bm25_only(query=query, size=size, from_=from_, categories=categories, latest=latest)
 
             return self._search_hybrid_native(
-                query=query, query_embedding=query_embedding, size=size, from_=from_, categories=categories, min_score=min_score
+                query=query, query_embedding=query_embedding, size=size, categories=categories, min_score=min_score
             )
         except Exception as e:
             logger.error(f"Unified search error: {e}")
@@ -287,4 +256,83 @@ class OpenSearchClient:
             return deleted > 0
         except Exception as e:
             logger.error(f"Error deleting paper chunks: {e}")
+            raise
+
+    
+    def _search_hybrid_native(
+        self,
+        query: str,
+        query_embedding: List[float],
+        size: int = 10,
+        categories: Optional[List[str]] = None,
+        min_score: float = 0.0
+    )-> Dict[str, Any]:
+        queryBuilder = QueryBuilder(
+            query=query,
+            size=size,
+            from_=0,
+            categories=categories,
+            latest_papers=False,
+            search_chunks=True,
+        )
+        bm25_search_body = queryBuilder.build()
+        bm25_query = bm25_search_body["query"]
+        hybrid_query = {
+            "hybrid":{
+                "queries": [
+                    bm25_query, {
+                        "knn": {
+                            "embedding": {
+                                "vector": query_embedding,
+                                "k": size * 2
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        search_body = {
+            "size": size,
+            "query": hybrid_query,
+            "_source": bm25_search_body["_source"],
+            "highlight": bm25_search_body["highlight"]
+        }
+
+        # Execute search with RRF pipeline
+        response = self.client.search(
+            index=self.index_name,
+            body=search_body,
+            params={
+                "search_pipeline": HYBRID_RRF_PIPELINE["id"]
+            }
+        )
+        results = {"total": response["hits"]["total"]["value"], "hits": []}
+        for hit in response["hits"]["hits"]:
+            if hit["_score"] < min_score:
+                continue
+            chunk = hit["_source"]
+            chunk["score"] = hit["_score"]
+            chunk["chunk_id"] = hit["_id"]
+            if "highlight" in hit:
+                chunk["highlights"] = hit["highlight"]
+            results["hits"].append(chunk)
+        results["total"] = len(results["hits"])
+        logger.info(f"Native hybrid search for '{query[:50]}...' returned {results['total']} results")
+        return results
+
+
+    def search_chunks_hybrid(
+        self,
+        query: str,
+        query_embedding: List[float],
+        size: int = 10,
+        categories: Optional[List[str]] = None,
+        min_score: float = 0.0
+    )-> Dict[str, Any]:
+        try:
+            return self._search_hybrid_native(
+                query=query, query_embedding=query_embedding, size=size, categories=categories, min_score=min_score
+            )
+        except Exception as e:
+            logger.error(f"Error searching chunks: {e}")
             raise

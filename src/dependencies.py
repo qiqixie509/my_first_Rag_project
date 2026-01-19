@@ -1,4 +1,3 @@
-from services.pdf_parser.parser import PDFParserService
 from fastapi import Depends
 from typing import Annotated
 from src.db.interfaces.base import BaseDatabase
@@ -8,9 +7,12 @@ from fastapi import Request
 from typing import Generator
 from src.config import Settings
 from src.services.opensearch.client import OpenSearchClient
+from src.services.cache.client import CacheClient
 from src.services.arxiv.arxiv_client import ArxivClient
 from src.services.pdf_parser.parser import PDFParserService
 from src.services.embedding.jina_client import JinaEmbeddingClient
+from src.services.ollama.client import OllamaClient
+from src.services.langfuse.client import LangfuseTracer
 
 
 @lru_cache
@@ -55,6 +57,24 @@ def get_embeddings_service(request: Request) -> JinaEmbeddingClient:
     return request.app.state.embeddings_service
 
 
+def get_ollama_client(request: Request) -> OllamaClient:
+    """Get Ollama client from the request state."""
+    return request.app.state.ollama_client
+
+
+def get_langfuse_tracer(request: Request) -> LangfuseTracer:
+    """Get Langfuse tracer from the request state."""
+    return request.app.state.langfuse_tracer
+
+
+def get_cache_client(request: Request) -> CacheClient | None:
+    """Get cache client from the request state."""
+    return getattr(request.app.state, "cache_client", None)
+
+
+
+
+
 # Dependency annotations
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 DatabaseDep = Annotated[BaseDatabase, Depends(get_database)]
@@ -63,3 +83,6 @@ OpenSearchDep = Annotated[OpenSearchClient, Depends(get_opensearch_client)]
 ArxivDep = Annotated[ArxivClient, Depends(get_arxiv_client)]
 PDFParserDep = Annotated[PDFParserService, Depends(get_pdf_parser)]
 EmbeddingsServiceDep = Annotated[JinaEmbeddingClient, Depends(get_embeddings_service)]
+OllamaDep = Annotated[OllamaClient, Depends(get_ollama_client)]
+LangfuseDep = Annotated[LangfuseTracer, Depends(get_langfuse_tracer)]
+CacheDep = Annotated[CacheClient | None, Depends(get_cache_client)]

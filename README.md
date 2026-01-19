@@ -1,5 +1,11 @@
 # my_first_Rag_project
-This Rag system is a complete research assistant that automatically solves research discovery problem. In the project, the modules are included:
+This is a paper search assistant that enables you to find specific papers of interest by asking questions on your local device.  This project is inspired by JAMWITHAI. 
+
+## Data Ingestion
+
+
+
+
 - Arxiv: It is responsible for fetching the latest research papers automatically daily.
 - PDF Parsing: It is responsible for parsing the PDFs of the research papers using docling.
 - Metadata Storage: Store authors, titles, abstracts, and categories of the research papers. The metadata is stored in PostgreSQL.
@@ -36,5 +42,12 @@ Embedding using Jani
 
 ## Data Ingestion Pipeline
 Fetch PDFs using Arxiv API -> Parse PDFs using Docling -> Store the parsed data in PostgreSQL -> Index the parsed data in OpenSearch -> Embedding the parsed data using Jani -> Daily report including the data from PostgreSQL and OpenSearch
+
+## FastAPI Design
+The FastAPI backend is designed to provide a RESTful API for the RAG system. The API is designed to be used by other applications to query the RAG system and get answers to questions. We used a central hub for dependency injection (DI), separated how objects are created from where they are used, making the code more clean and testable. API routes like ask_question just ask for an OpenSearchDep. We reuse that single connection across thousands of requests, rather than creating a new expensive connection for every single user query.
+- /ask: Ask a question
+- /stream: Stream the answer
+
+
 
 

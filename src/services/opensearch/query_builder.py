@@ -135,7 +135,7 @@ class QueryBuilder:
         return {"bool": bool_query}
 
 
-    def _build_sort(self)->Optional[List[Dict[str, Any]]]:
+    def _build_sort(self)->Optional[List[Dict[str, Any] | str]]:
         if self.latest_papers:
             return [{"published_date": {"order": "desc"}}, "_score"]
 

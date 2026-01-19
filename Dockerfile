@@ -24,7 +24,12 @@ FROM python:3.12.8-slim AS final
 EXPOSE 8000
 
 # Install system dependencies for Docling (libGL.so.1, etc.)
+# Install system dependencies for Docling (libGL.so.1, etc.)
 RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    libcurl4-openssl-dev \
+    libssl-dev \
     libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*

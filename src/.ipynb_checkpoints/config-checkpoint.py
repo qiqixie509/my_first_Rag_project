@@ -74,7 +74,7 @@ class OpenSearchSettings(BaseConfigSettings):
     hybrid_search_size_multiplier: int = 2  # Get k*multiplier for better recall
 
 
-class RedisSetting(BaseConfigSettings):
+class RedisSettings(BaseConfigSettings):
     model_config = SettingsConfigDict(
         env_file=[".env", str(ENV_FILE_PATH)],
         env_prefix="REDIS__",
@@ -125,7 +125,7 @@ class Settings(BaseConfigSettings):
 
     arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)
-    redis: RedisSetting = Field(default_factory=RedisSetting)
+    redis: RedisSettings = Field(default_factory=RedisSettings)
     pdf_parser: PDFParserSettings = Field(default_factory=PDFParserSettings)
 
 

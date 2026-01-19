@@ -1,8 +1,8 @@
-from schemas.api.health import ServiceStatus
+from src.schemas.api.health import ServiceStatus
 from fastapi import APIRouter
 from sqlalchemy import text
-from schemas.api.health import HealthResponse
-from dependencies import DatabaseDep, SettingsDep
+from src.schemas.api.health import HealthResponse
+from src.dependencies import DatabaseDep, SettingsDep
 
 router = APIRouter()
 
