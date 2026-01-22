@@ -8,13 +8,13 @@ LangGraph Agentic RAG Workflow
 ![LangGraph Agentic RAG Workflow](pictures/agentic_rag_workflow.png)
 
 ## The components of the RAG pipeline
-- Arxiv API: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs. More details can be found in ![Arxiv Services](src/services/arxiv/README.md)
-- PDF Parser: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in ![PDF Parser](src/services/pdf_parser/README.md)
-- Database: We use PostgreSQL to store the parsed data. More details can be found in ![Database](src/services/database/README.md)
-- Embedding: We use Jani to generate embeddings for the parsed data. More details can be found in ![Embedding](src/services/embedding/README.md)
-- Search: We use OpenSearch to search the parsed data. More details can be found in ![Search](src/services/search/README.md)
-- LLM: We use OpenAI to generate responses to the user's questions. More details can be found in ![LLM](src/services/llm/README.md)
-- FastAPI: We use FastAPI to provide a RESTful API for the RAG system. More details can be found in ![FastAPI](src/services/fastapi/README.md)
+- Arxiv API: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs. More details can be found in [Arxiv Services](src/services/arxiv/README.md)
+- PDF Parser: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in [PDF Parser](src/services/pdf_parser/README.md)
+- Database: We use PostgreSQL to store the parsed data. More details can be found in [Database](src/services/database/README.md)
+- Embedding: We use Jani to generate embeddings for the parsed data. More details can be found in [Embedding](src/services/embedding/README.md)
+- Search: We use OpenSearch to search the parsed data. More details can be found in [Search](src/services/search/README.md)
+- LLM: We use OpenAI to generate responses to the user's questions. More details can be found in [LLM](src/services/llm/README.md)
+
 
 ## FastAPI Design
 The FastAPI backend is designed to provide a RESTful API for the RAG system. The API is designed to be used by other applications to query the RAG system and get answers to questions. We used a central hub for dependency injection (DI), separated how objects are created from where they are used, making the code more clean and testable. API routes like ask_question just ask for an OpenSearchDep. We reuse that single connection across thousands of requests, rather than creating a new expensive connection for every single user query.
