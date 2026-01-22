@@ -1,47 +1,20 @@
 # my_first_Rag_project
-This is a paper search assistant that enables you to find specific papers of interest by asking questions on your local device.  This project is inspired by JAMWITHAI. 
-
-## Data Ingestion
+This is a personalized paper search assistant that enables you to find specific papers by asking questions on your local device. We completed a RAG pipeline based on a local LLM, that intellegently chunking and hybrid search, combining semantic understandings to get responses. On top of the basic RAG pipeline, we added agentic features to improve the retrieval performance by introducing guardrails validation to filter out irrelevant questions to avoid wasting tokens. This project is inspired by the project `arxiv-paper-curator` from JAMWITHAI, and I implemented the entire project from scratch by myself.
 
 
+## RAG Pipeline Architecture
+![Rag pipeline architecture](pictures/image.png)
+LangGraph Agentic RAG Workflow
+![LangGraph Agentic RAG Workflow](pictures/agentic_rag_workflow.png)
 
-
-- Arxiv: It is responsible for fetching the latest research papers automatically daily.
-- PDF Parsing: It is responsible for parsing the PDFs of the research papers using docling.
-- Metadata Storage: Store authors, titles, abstracts, and categories of the research papers. The metadata is stored in PostgreSQL.
-- Search Engine: Use OpenSearch to index the parsed data, and apply hybrid search (BM25 + semantic vectors) to retrieve the relevant papers.
-- Chunking Engine: 
-- Rag pipeline: Query expansion + retriveval + prompt templating
-- Local LLM: Answer questions using Ollama or API
-- Observability: 
-- FastAPI backend: 
- 
-
-## Environment
-- Python 3.12
-- Docker
-- Docker Compose
-- uv
-
-## Dependencies
-- PostgreSQL
-- OpenSearch
-- Ollama
-- Airflow   
-
-## Arxiv Ingestion
-
-
-## Data Ingestion
-Data source: arxiv
-Docling PDF processing
-Data storage: PostgreSQL
-Opensearch indexing
-Embedding using Jani
-
-
-## Data Ingestion Pipeline
-Fetch PDFs using Arxiv API -> Parse PDFs using Docling -> Store the parsed data in PostgreSQL -> Index the parsed data in OpenSearch -> Embedding the parsed data using Jani -> Daily report including the data from PostgreSQL and OpenSearch
+## The components of the RAG pipeline
+- Arxiv API: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs. More details can be found in ![Arxiv Services](src/services/arxiv/README.md)
+- PDF Parser: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in ![PDF Parser](src/services/pdf_parser/README.md)
+- Database: We use PostgreSQL to store the parsed data. More details can be found in ![Database](src/services/database/README.md)
+- Embedding: We use Jani to generate embeddings for the parsed data. More details can be found in ![Embedding](src/services/embedding/README.md)
+- Search: We use OpenSearch to search the parsed data. More details can be found in ![Search](src/services/search/README.md)
+- LLM: We use OpenAI to generate responses to the user's questions. More details can be found in ![LLM](src/services/llm/README.md)
+- FastAPI: We use FastAPI to provide a RESTful API for the RAG system. More details can be found in ![FastAPI](src/services/fastapi/README.md)
 
 ## FastAPI Design
 The FastAPI backend is designed to provide a RESTful API for the RAG system. The API is designed to be used by other applications to query the RAG system and get answers to questions. We used a central hub for dependency injection (DI), separated how objects are created from where they are used, making the code more clean and testable. API routes like ask_question just ask for an OpenSearchDep. We reuse that single connection across thousands of requests, rather than creating a new expensive connection for every single user query.

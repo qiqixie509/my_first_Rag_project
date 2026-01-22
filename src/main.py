@@ -5,7 +5,7 @@ import uvicorn
 from src.db.factory import make_database
 from contextlib import asynccontextmanager
 from src.config import get_settings
-from src.routers import hybrid_search, ping
+from src.routers import hybrid_search, ping, agentic_ask
 from src.services.opensearch.factory import make_opensearch_client
 from src.services.arxiv.factory import make_arxiv_client
 from src.services.pdf_parser.factory import make_pdf_parser_service
@@ -58,6 +58,7 @@ app.include_router(ping.router, prefix="/api/v1") # Health check endpoint
 app.include_router(hybrid_search.router, prefix="/api/v1")
 app.include_router(ask_router, prefix="/api/v1")
 app.include_router(stream_router, prefix="/api/v1")
+app.include_router(agentic_ask.router, prefix="/api/v1")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

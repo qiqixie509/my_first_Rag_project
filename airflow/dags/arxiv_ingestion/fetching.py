@@ -27,7 +27,6 @@ async def run_paper_ingestion_pipeline(
         )
 
 
-
 def fetch_daily_papers(**context):
 
     logger.info("Fetching daily arXiv papers")

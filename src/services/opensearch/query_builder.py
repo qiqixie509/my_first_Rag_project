@@ -60,7 +60,7 @@ class QueryBuilder:
         return filters
 
 
-    def _build_source_fields(self)->List[str]:
+    def _build_source_fields(self)->Any:
         """Build the source fields part of the OpenSearch query body."""
         if self.search_chunks:
             return {"excludes": ["embedding"]}

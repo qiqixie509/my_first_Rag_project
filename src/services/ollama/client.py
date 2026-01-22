@@ -18,6 +18,26 @@ class OllamaClient:
         self.response_parser = ResponseParser()
 
 
+    def get_langchain_model(
+        self,
+        model: str = "llama3.2",
+        temperature: float = 0.0,
+        **kwargs: Any
+    ):
+        """Get a LangChain-compatible Ollama model instance."""
+        try:
+            from langchain_ollama import ChatOllama
+            return ChatOllama(
+                model=model,
+                base_url=self.base_url,
+                temperature=temperature,
+                **kwargs
+            )
+        except ImportError:
+            logger.error("langchain-ollama package not found. Please install it.")
+            raise OllamaException("langchain-ollama package not found")
+
+
     async def generate(
         self,
         model: str,

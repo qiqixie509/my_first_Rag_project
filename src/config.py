@@ -155,11 +155,11 @@ class Settings(BaseConfigSettings):
     postgres_max_overflow: int = 0
 
     ollama_host: str = "http://localhost:11434"
-    ollama_model: str = "llama3.2:1b"
-    ollama_timeout: int = 300
+    ollama_model: str = "llama3.2:latest"
+    ollama_timeout: int = 600
 
     # Jina AI embeddings configuration
-    jina_api_key: str = ""
+    jina_api_key: str = "jina_e33c88c5d58848119d084207ac16572f1O-axjl_SRPKuBVt1UrCfW9ecynx"
 
     arxiv: ArxivSettings = Field(default_factory=ArxivSettings)
     opensearch: OpenSearchSettings = Field(default_factory=OpenSearchSettings)

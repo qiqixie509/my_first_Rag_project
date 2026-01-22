@@ -13,6 +13,8 @@ from src.services.pdf_parser.parser import PDFParserService
 from src.services.embedding.jina_client import JinaEmbeddingClient
 from src.services.ollama.client import OllamaClient
 from src.services.langfuse.client import LangfuseTracer
+from src.services.agents.agentic_rag import AgenticRAGService
+from src.services.agents.factory import make_agentic_rag_service
 
 
 @lru_cache
@@ -86,3 +88,21 @@ EmbeddingsServiceDep = Annotated[JinaEmbeddingClient, Depends(get_embeddings_ser
 OllamaDep = Annotated[OllamaClient, Depends(get_ollama_client)]
 LangfuseDep = Annotated[LangfuseTracer, Depends(get_langfuse_tracer)]
 CacheDep = Annotated[CacheClient | None, Depends(get_cache_client)]
+
+def get_agentic_rag_service(
+    opensearch: OpenSearchDep,
+    ollama: OllamaDep,
+    embeddings: EmbeddingsServiceDep,
+    langfuse: LangfuseDep,
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> AgenticRAGService:
+    return make_agentic_rag_service(
+        opensearch_client=opensearch,
+        ollama_client=ollama,
+        embeddings_client=embeddings,
+        langfuse_tracer=langfuse,
+    )
+
+
+AgenticRAGDep = Annotated[AgenticRAGService, Depends(get_agentic_rag_service)]
+
