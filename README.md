@@ -26,7 +26,7 @@ LangGraph Agentic RAG Workflow
 - **Database**: We use PostgreSQL to store the parsed data. More details can be found in [Database](src/services/database/README.md)
 - **Cache**: We use Redis to cache the results of the RAG pipeline. More details can be found in [Cache](src/services/cache/README.md)
 - **Embedding**: We use Jina to generate embeddings for the parsed data. More details can be found in [Embedding](src/services/embedding/README.md)
-- **Search**: We use OpenSearch to search the parsed data. More details can be found in [Search](src/services/opensearch/README.md)
+- **Search**: We use OpenSearch to search the parsed data, it supports both semantic search and hybrid search. More details can be found in [Search](src/services/opensearch/README.md)
 - **LLM**: We use Ollama to generate responses to the user's questions. More details can be found in [LLM](src/services/ollama/README.md)
 - **Agentic RAG**: On top of the basic RAG pipeline, we added agentic features to improve the retrieval relevance for avoiding irrelevant documents and improve the answer quality. More details can be found in [Agentic RAG](src/services/agents/README.md)
 
