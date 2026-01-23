@@ -7,6 +7,19 @@ This is a personalized paper search assistant that enables you to find specific 
 LangGraph Agentic RAG Workflow
 ![LangGraph Agentic RAG Workflow](pictures/agentic_rag_workflow.png)
 
+## Technical Stack
+- **Docker**: Docker is used to create a containerized environment for the RAG pipeline.
+- **Arxiv API**: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs.
+- **Docling**: Docling is a powerful document parsing tool by IBM, it is used to extract structured content and raw text from PDF research papers.
+- **PostgreSQL**: We use PostgreSQL to store the parsed data.
+- **OpenSearch**: We use OpenSearch to search the parsed data.
+- **Redis**: We use Redis to cache the results of the RAG pipeline.
+- **Jani**: Jani is a powerful embedding tool, it is used to generate embeddings for the parsed data.
+- **Ollama**: Ollama is a powerful LLM inference tool, it is used to generate responses to the user's questions.
+- **Airflow**: Airflow is a powerful workflow management tool, it is used to orchestrate the RAG pipeline, including data fetching, parsing, embedding, and search.
+- **Langfuse**: Langfuse is a powerful tracing tool, it is used to trace the RAG pipeline and easily monitor the performance of the RAG pipeline. It's also used to located the issue of the RAG pipeline.
+
+
 ## The components of the RAG pipeline
 - **Arxiv API**: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs. More details can be found in [Arxiv Services](src/services/arxiv/README.md)
 - **PDF Parser**: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in [PDF Parser](src/services/pdf_parser/README.md)

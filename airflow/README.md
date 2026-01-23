@@ -26,3 +26,14 @@ The main workflow is defined in `dags/arxiv_paper_ingestion.py` and runs daily t
 ## Configuration
 
 The pipeline relies on environment variables defined in the root `.env` file, as well as the global system settings in `src/config.py`.
+
+## Use
+
+The data ingestion component is used to fetch and process new research papers from the arXiv API and index them into OpenSearch for hybrid search. For the init job, we ran the backfill job to fetch and process all the papers in the specified categories since the start of the year. The backfill command is as follows:
+```bash
+docker exec -it rag-airflow airflow dags backfill \
+    --start-date 2026-01-01 \
+    --end-date 2026-01-10 \
+    arxiv_paper_ingestion
+```
+The daily job is triggered by the Airflow scheduler every day at 06:00 am.
