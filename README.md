@@ -14,9 +14,9 @@ LangGraph Agentic RAG Workflow
 - **PostgreSQL**: We use PostgreSQL to store the parsed data.
 - **OpenSearch**: We use OpenSearch to search the parsed data.
 - **Redis**: We use Redis to cache the results of the RAG pipeline.
-- **Jani**: Jani is a powerful embedding tool, it is used to generate embeddings for the parsed data.
+- **Jina**: Jina is a powerful embedding tool, it is used to generate embeddings for the parsed data.
 - **Ollama**: Ollama is a powerful LLM inference tool, it is used to generate responses to the user's questions.
-- **Airflow**: Airflow is a powerful workflow management tool, it is used to orchestrate the RAG pipeline, including data fetching, parsing, embedding, and search.
+- **Airflow**: Airflow is a powerful workflow management tool, it is used to orchestrate the RAG pipeline, including data fetching, parsing, embedding, and search. More details about data orchestration in [Airflow](airflow/README.md).
 - **Langfuse**: Langfuse is a powerful tracing tool, it is used to trace the RAG pipeline and easily monitor the performance of the RAG pipeline. It's also used to located the issue of the RAG pipeline.
 
 
@@ -25,7 +25,7 @@ LangGraph Agentic RAG Workflow
 - **PDF Parser**: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in [PDF Parser](src/services/pdf_parser/README.md)
 - **Database**: We use PostgreSQL to store the parsed data. More details can be found in [Database](src/services/database/README.md)
 - **Cache**: We use Redis to cache the results of the RAG pipeline. More details can be found in [Cache](src/services/cache/README.md)
-- **Embedding**: We use Jani to generate embeddings for the parsed data. More details can be found in [Embedding](src/services/embedding/README.md)
+- **Embedding**: We use Jina to generate embeddings for the parsed data. More details can be found in [Embedding](src/services/embedding/README.md)
 - **Search**: We use OpenSearch to search the parsed data. More details can be found in [Search](src/services/opensearch/README.md)
 - **LLM**: We use Ollama to generate responses to the user's questions. More details can be found in [LLM](src/services/ollama/README.md)
 - **Agentic RAG**: On top of the basic RAG pipeline, we added agentic features to improve the retrieval relevance for avoiding irrelevant documents and improve the answer quality. More details can be found in [Agentic RAG](src/services/agents/README.md)
