@@ -19,6 +19,22 @@ The OpenSearch service and the **Indexing Service** work in tandem to enable sea
 
 In short: **Indexing** prepares the data; **OpenSearch** hosts and queries it.
 
+## Hybrid Search
+In this project, I use the hybrid search to search the papers. It combines the keyword search and semantic search to get the more relevant results. The keyword search ensures sensitivity to exact words the use included in the prompt, while the semantic search finds documents with similar meaning, even without matching words. We use RRF (Reciprocal Rank Fusion) to combine the results of the two searches.
+
+### Metadata Filtering
+Uses rigid criteria to narrow down documents based on metadata like title, author, creation date, access privileges, and more. Metadata filtering doesn't perform retrieval, it narrows down results from other techniques based on user attributes, not query content. 
+Advantages:
+- Simple to understand and debug
+- Fast,optimized, mature, and reliable
+- Enforces strict retrieval rules, matching exact filter criteria.
+
+Cons:
+- Not true search
+- Rigit, ignores content, and provides no way for ranking
+- Useless alone
+
+
 ## Components
 
 ### `OpenSearchClient`

@@ -1,11 +1,25 @@
 # my_first_Rag_project
-This is a personalized paper search assistant that enables you to find specific papers by asking questions on your local device. We completed a RAG pipeline based on a local LLM, that intellegently chunking and hybrid search, combining semantic understandings to get responses. On top of the basic RAG pipeline, we added agentic features to improve the retrieval performance by introducing guardrails validation to filter out irrelevant questions to avoid wasting tokens. This project is inspired by the project `arxiv-paper-curator` from JAMWITHAI, and I implemented the entire project from scratch by myself.
+This is a personalized paper search assistant that enables you to find specific papers by asking questions on your local device. I completed a LAGNGraph agentic RAG pipeline on top of the basic Rag pipeline, which based on a local LLM, that intellegently chunking and hybrid search, combining semantic understandings to get responses. I also added agentic features to improve the retrieval performance by introducing guardrails validation to filter out irrelevant questions to avoid wasting tokens. This project is inspired by the project `arxiv-paper-curator` from JAMWITHAI, and I implemented the entire project from scratch by myself.
+
+## Evolution of the RAG pipeline (WIP)
+### 1. Adding evals for RAG 
+The RAG consist of retrieval and generation, so we need to evaluate both.
+**Retrieval Stage**:
+- Check if the retrieved documents are relevant to the query
+- Check if there are redundant articles
+**Generation Stage**:
+- RAG Triad
+    - Groundedness Check: Check if the generated answer well-gounded in the retrieved context, without hallucination or unsupported claims.
+    - Answer Relevance: Check if the generated answer is relevant to the query.
+    - Faithfulness: Check if the generated answer is faithful to the retrieved context.
+
 
 
 ## RAG Pipeline Architecture
 ![Rag pipeline architecture](pictures/image.png)
 LangGraph Agentic RAG Workflow
 ![LangGraph Agentic RAG Workflow](pictures/agentic_rag_workflow.png)
+
 
 ## Technical Stack
 - **Docker**: Docker is used to create a containerized environment for the RAG pipeline.
@@ -36,6 +50,14 @@ The FastAPI backend is designed to provide a RESTful API for the RAG system. The
 - /ask: Ask a question
 - /stream: Stream the answer
 
+## Retrieval Quality Metrics
+To evaluate the retrieval quality, we need to know the correct answers.
+The Prompt: The specific prompt being evaluated
+Ranked Result: Documents returned in ranked order
+Ground Truth: All documents labeled as relevant or irrelevant
 
+Metrics:
+Precision
+Recall
 
 
