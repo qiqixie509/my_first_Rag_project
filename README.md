@@ -14,7 +14,7 @@ The RAG consist of retrieval and generation, so we need to evaluate both.
     - Faithfulness: Check if the generated answer is faithful to the retrieved context.
 
 ### 2. Apply PageIndex to build a RAG system without embedding and vector DB
-
+The repo is here: [my_first_pageindex-rag](https://github.com/qiqixie509/my-first-pageindex-rag)
 **Architecture**:
 - Index time: Document → LLM Segmentation → Hierarchical Tree → LLM Summarization → JSON Index
 - Query time: Question → Load Index → Tree Navigation (LLM picks branches) → Leaf Content → LLM Answer
