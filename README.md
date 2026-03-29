@@ -13,7 +13,30 @@ The RAG consist of retrieval and generation, so we need to evaluate both.
     - Answer Relevance: Check if the generated answer is relevant to the query.
     - Faithfulness: Check if the generated answer is faithful to the retrieved context.
 
+### 2. Apply PageIndex to build a RAG system without embedding and vector DB
 
+**Architecture**:
+- Index time: Document → LLM Segmentation → Hierarchical Tree → LLM Summarization → JSON Index
+- Query time: Question → Load Index → Tree Navigation (LLM picks branches) → Leaf Content → LLM Answer
+
+** trade-offs**:
+**PageIndex wins** when your documents have structure and your questions map to that structure. “What’s the return policy?” navigates directly to the Returns section. “How do I ship internationally?” goes to Shipping → International.
+
+**Vector RAG wins** when queries are semantically vague and the relevant content could be anywhere. “What should I know before ordering?” might need chunks from shipping, returns, and account setup — a tree-based approach would have to pick one branch.
+
+
+Considering:
+- Walk me through a system you built where unstructured data was turned into structured knowledge. What were the steps — ingestion, transformation, storage, retrieval — and what was your role specifically? *
+- What retrieval or indexing approach have you used in production (vector DBs, search indexes, knowledge graphs)? Why did you choose it, and what problems did you run into? *
+- Have you supported LLMs with enriched knowledge (RAG, metadata structuring, entity linking)? If yes, describe one situation where the quality of your data pipeline directly improved model accuracy.
+
+### 3. The trade off of choosing vector database
+The choice of which vector database to use depends on factors such as:
+- AI application's specific requirements
+- the other system components and potential integration with them
+- the Cloud provider
+- the application
+- potentially the budget available
 
 ## RAG Pipeline Architecture
 ![Rag pipeline architecture](pictures/image.png)

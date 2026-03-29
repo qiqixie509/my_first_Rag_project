@@ -57,8 +57,12 @@ class OpenSearchClient:
             for chunk in chunks:
                 chunk_data = chunk["chunk_data"].copy()
                 chunk_data["embedding"] = chunk["embedding"]
-
-                action = {"_index": self.index_name, "_source": chunk_data}
+                # Add _id based on the paper and chunk to avoid duplicate storage
+                arxiv_id = chunk_data["arxiv_id"]
+                chunk_index = chunk_data["chunk_index"]
+                doc_id = f"{arxiv_id}_{chunk_index}"
+                
+                action = {"_index": self.index_name, "_id": doc_id, "_source": chunk_data}
                 actions.append(action)
 
             success, failed = helpers.bulk(self.client, actions, refresh=True)
@@ -189,6 +193,7 @@ class OpenSearchClient:
             search_chunks = True
         )
         search_body = builder.build()
+        print(search_body)
         response = self.client.search(index=self.index_name, body=search_body)
         results = {"total": response["hits"]["total"]["value"], "hits": []}
 
@@ -245,13 +250,14 @@ class OpenSearchClient:
                 body={
                     "query":{
                         "term": {
-                            "arxiv_id": arxiv_id
+                            "arxiv_id.keyword": arxiv_id
                         }
                     }
                 },
                 refresh=True
             )
             deleted = response.get("deleted", 0)
+            print(f"Deleted {deleted} chunks for paper {arxiv_id}")
             logger.info(f"Deleted {deleted} chunks for paper {arxiv_id}")
             return deleted > 0
         except Exception as e:
