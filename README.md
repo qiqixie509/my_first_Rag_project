@@ -14,7 +14,7 @@ The RAG consist of retrieval and generation, so we need to evaluate both.
     - Faithfulness: Check if the generated answer is faithful to the retrieved context.
 
 ### 2. Apply PageIndex to build a RAG system without embedding and vector DB
-The repo is here: [my_first_pageindex-rag](https://github.com/qiqixie509/my-first-pageindex-rag)
+The repo is here: [my_first_pageindex-rag](https://github.com/qiqixie509/pageindex-rag)
 **Architecture**:
 - Index time: Document → LLM Segmentation → Hierarchical Tree → LLM Summarization → JSON Index
 - Query time: Question → Load Index → Tree Navigation (LLM picks branches) → Leaf Content → LLM Answer
@@ -24,11 +24,6 @@ The repo is here: [my_first_pageindex-rag](https://github.com/qiqixie509/my-firs
 
 **Vector RAG wins** when queries are semantically vague and the relevant content could be anywhere. “What should I know before ordering?” might need chunks from shipping, returns, and account setup — a tree-based approach would have to pick one branch.
 
-
-Considering:
-- Walk me through a system you built where unstructured data was turned into structured knowledge. What were the steps — ingestion, transformation, storage, retrieval — and what was your role specifically? *
-- What retrieval or indexing approach have you used in production (vector DBs, search indexes, knowledge graphs)? Why did you choose it, and what problems did you run into? *
-- Have you supported LLMs with enriched knowledge (RAG, metadata structuring, entity linking)? If yes, describe one situation where the quality of your data pipeline directly improved model accuracy.
 
 ### 3. The trade off of choosing vector database
 The choice of which vector database to use depends on factors such as:
