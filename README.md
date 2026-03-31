@@ -7,11 +7,22 @@ The RAG consist of retrieval and generation, so we need to evaluate both.
 **Retrieval Stage**:
 - Check if the retrieved documents are relevant to the query
 - Check if there are redundant articles
+- Retrieval-level metrics
+    - Recall@K
+    - Precision@K
+    - Mean Reciprocal Rank (MRR)
 **Generation Stage**:
 - RAG Triad
     - Groundedness Check: Check if the generated answer well-gounded in the retrieved context, without hallucination or unsupported claims.
     - Answer Relevance: Check if the generated answer is relevant to the query.
     - Faithfulness: Check if the generated answer is faithful to the retrieved context.
+- End-to-end metrics
+    - Answer correctness.
+    - Faithfulness to retrieved sources.
+    - Helpfulness and completeness.
+There are two main evaluation perspectives:
+
+Both evaluation appraches are measured, but the primary focus is end-to-end answer quality while ensuring retrieval recall is sufficient.
 
 ### 2. Apply PageIndex to build a RAG system without embedding and vector DB
 The repo is here: [my_first_pageindex-rag](https://github.com/qiqixie509/pageindex-rag)
@@ -32,6 +43,18 @@ The choice of which vector database to use depends on factors such as:
 - the Cloud provider
 - the application
 - potentially the budget available
+
+### 4. Document Chunking Strategy: Fixed Length vs Semantic Boundaries
+
+### 5. Problems with Chunk Size
+### 6. Choosing an Embedding Model
+
+### 7. When Hybrid Retrieval Works Better (Vector + BM25)
+### 8. Role of a Reranking Model
+### 9. Preventing Old Index Contamination After Knowledge Base Updates
+### 10. Handling Distribution Shift Between Offline Evaluation and Real Queries
+
+
 
 ## RAG Pipeline Architecture
 ![Rag pipeline architecture](pictures/image.png)
