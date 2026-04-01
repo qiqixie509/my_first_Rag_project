@@ -53,7 +53,32 @@ The choice of which vector database to use depends on factors such as:
 ### 8. Role of a Reranking Model
 ### 9. Preventing Old Index Contamination After Knowledge Base Updates
 ### 10. Handling Distribution Shift Between Offline Evaluation and Real Queries
+### 11. AI Failures: Hallucinations, safety, and reliability Patterns
+Unlike traditional software, AI systems can fail in unpredictable ways. Non-deterministic behavior means that the same input can produce different outputs on different runs. Temperature is a parameter controls how random the model's output is. Higher temperature means more creative but less predictable outputs.
 
+**Hallucination Problem**
+The overall idea of processing hallucination problem as follows:
+- Grounding with RAG is a good way to prevent hallucination, but it is not a perfect solution. If the retrieval step returns the wrong documents, the model will confidently synthesize wrong inforamtion. The quality of RAG pipeline depends heavily on the quality of embedding, chunking strategy and relevance ranking.
+- Confidence scoring: 
+    - token level probablities: Most language models can output the probability of each token they generate.
+    - self-evalluation: ask a model to evaluate its own response.
+    - cross-validation: Run the same query through the model multiple times. If the answers vary significantly, it may indicate low confidence.
+- retries with verification:
+    - Generate the inital response
+    - Run the verification check (format, factual check, or a second model call that evaluates the first response)
+- set a retry limit: after N failed attempts, escalate to a human or return a graceful fallback response.
+
+avoid cascading failures:
+![avoid cascading failures](pictures/avoid_cascading_fails.jpg)
+
+In this project, we synthesize the answer from the vector database to the prompts everytime to provide the grounded knowledge of the query, which is a way to avoid hallucination. In LangChain, there is built-in self-evaluation mechanism to assess their own output quality, adjusting confidence scores accordingly.
+```python
+from langchai.llm import SelfEvaluationLLM
+
+llm = SelfEvaluationLLM(model_name="gpt-4o")
+response, confidence_score = llm.evaluate("How is the weather today?")
+
+```
 
 
 ## RAG Pipeline Architecture
@@ -77,7 +102,7 @@ LangGraph Agentic RAG Workflow
 
 ## The components of the RAG pipeline
 - **Arxiv API**: Arxiv is a global research paper database, we use Arxiv API to fetch papers and download PDFs. More details can be found in [Arxiv Services](src/services/arxiv/README.md)
-- **PDF Parser**: PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in [PDF Parser](src/services/pdf_parser/README.md)
+- **Chunking**: In this project, we applied sementic chunking to make the chunkcs are conceptually coherent. PDF Parser is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM. More details can be found in [PDF Parser](src/services/pdf_parser/README.md)
 - **Database**: We use PostgreSQL to store the parsed data. More details can be found in [Database](src/services/database/README.md)
 - **Cache**: We use Redis to cache the results of the RAG pipeline. More details can be found in [Cache](src/services/cache/README.md)
 - **Embedding**: We use Jina to generate embeddings for the parsed data. More details can be found in [Embedding](src/services/embedding/README.md)

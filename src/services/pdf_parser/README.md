@@ -1,6 +1,14 @@
-# PDF Parser Service
+# Chunking
 
-The PDF Parser Service is responsible for extracting structured content and raw text from PDF research papers. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM.
+This component is responsible for chunking in the RAG pipeline. In this project, we select semantic chunking to avoid cutting off the meaning of the text for fixed-size chunking and avoid the complexity of recursive chunking. It is built on top of [Docling](https://github.com/DS4SD/docling), a powerful document parsing tool by IBM.
+
+## Chunking strategies trade offs
+There are few common strategies for chunking, the comparison is as follows:
+| Strategy | Pros | Cons | Best for |
+| --- | --- | --- | --- |
+| Fixed-size chunking | Simple and fast | When content varies a lot, it may cut off meaning or have awkward splits | Short and simple documents or structured data that needs a consistent size for downstream processing |
+| Semantic chunking | Conceptually coherent | More complex and computationally heavy | Documents with clear semantic structure |
+| Recursive chunking | fine-grained control, ensure every chunk stays meaningful. It can handle really large or complex texts in a strctured way. | More complex and slower | Very large or complex documents |
 
 ## Features
 
